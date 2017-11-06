@@ -26,7 +26,7 @@ def kMeans_accuracy(dist):
         if labels[i] == y[i]:
             correct = correct + 1
     correct = max(correct, num_samples-correct)
-    return [score,iterations]
+    return [correct/float(num_samples),iterations,score]
     #ax = fig.add_subplot(212)
     #for i in range(len(X)):
     #    ax.scatter(X[i][0],X[i][1],color=colors[labels[i]])
@@ -34,19 +34,34 @@ def kMeans_accuracy(dist):
 distances = [(x/2.0) for x in reversed(range(21))]
 print(distances)
 accuracy = []
-std = []
+std_acc = []
+mi_score = []
+std_mi_score = []
+iterations = []
+std_iterations = []
+
 trials_acc = []
 trials_iter = []
+trials_mi = []
 
 
 
 for dist in distances:
-    for i in range(0,500):
-        trials_acc.append(kMeans_accuracy(dist)[0])
-        trials_iter.append(kMeans_accuracy(dist)[1])
+    for i in range(0,100):
+        kMeans_trial = kMeans_accuracy(dist)
+        trials_acc.append(kMeans_trial[0])
+        trials_iter.append(kMeans_trial[1])
+        trials_mi.append(kMeans_trial[2])
     accuracy.append(np.average(trials_acc))
-    std.append(np.std(trials_acc))
+    std_acc.append(np.std(trials_acc))
+    iterations.append(np.average(trials_iter))
+    std_iterations.append(np.std(trials_iter))
+    mi_score.append(np.average(trials_mi))
+    std_mi_score.append(np.std(trials_mi))
     trials_acc = []
+    trials_iter = []
+    trials_mi = []
 
-plt.errorbar(distances,accuracy,std,fmt='o', capsize=5)
+plt.errorbar(distances,mi_score,std_mi_score,fmt='o', capsize=5)
+
 
